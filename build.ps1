@@ -11,8 +11,8 @@ $Transfer_nsis='C:\Temp\Frame.io.Transfer.NSIS.exe'
 $ProgressPreference = 'SilentlyContinue'
 
 function CheckIsInstalled($prog) {
-   $Check1=((gp "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*")).DisplayName -Match $prog).Length -gt 0
-   $Check2=((gp "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*")).DisplayName -Match $prog).Length -gt 0
+   $Check1=((gp "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*").DisplayName -Match $prog).Length -gt 0
+   $Check2=((gp "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*").DisplayName -Match $prog).Length -gt 0
    if ($Check1.Length -gt 0) { 
        return $true;
    }
