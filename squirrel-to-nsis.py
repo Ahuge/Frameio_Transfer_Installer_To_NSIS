@@ -39,10 +39,10 @@ def write_nsi(nuspec: Nuspec, folder: str, subdir: str):
         nsi_file.write('InstallDir "$PROGRAMFILES\\{}"\n'.format(nuspec.title))
         nsi_file.write('Section\n')
         nsi_file.write('SetOutPath "$INSTDIR"\n')
-        nsi_file.write('File /r {}\n'.format(subdir))
+        nsi_file.write('File /r {}\n'.format(subdir + os.sep + "*.*"))
         nsi_file.write('CreateShortcut "$SMPROGRAMS\\{title}.lnk" \
                  "$INSTDIR\\{title}.exe"\n'
-                 .format(title=nuspec.iden)
+                 .format(title=nuspec.title)
         )
         nsi_file.write('WriteUninstaller "$INSTDIR\\uninstall.exe"\n')
         nsi_file.write('WriteRegStr HKLM "{}" "DisplayName" "{}"\n'
