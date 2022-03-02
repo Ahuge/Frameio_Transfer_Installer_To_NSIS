@@ -82,6 +82,10 @@ def main(squirrel: str, nsis: str):
                     nupkg.extract(file, path=tempdir)
     print("folder: {}".format(tempdir))
     # TODO: Copy all files from 'lib/net45' into source directory
+    os.makedirs(os.path.join(tempdir, 'source'))
+    for filename in os.listdir(os.path.join(tempdir, 'lib', 'net45')):
+        shutil.move(os.path.join(tempdir, 'lib', 'net45', filename), os.path.join(tempdir, 'source', filename))
+        
     write_nsi(nuspec=nuspec, folder=tempdir, subdir='source')
     subprocess.run(['makensis', os.path.join(tempdir, 'setup.nsi'))])
     shutil.move(Path(tempdir, '{} Setup.exe'.format(nuspec.iden)), Path(nsis))
