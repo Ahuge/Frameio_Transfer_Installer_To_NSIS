@@ -22,22 +22,30 @@ function CheckIsInstalled($prog) {
    return $false;
 }
 
+Write-Host "Checking dependencies"
 # Check to see if NSIS is installed
-if (-Not CheckIsInstalled("Nullsoft Install System")) {
+$NullsoftInstalled = CheckIsInstalled("Nullsoft Install System")
+if (-Not $NullsoftInstalled) {
     # Install NSIS
     Write-Host "NSIS not installed, installing now"
     Invoke-WebRequest -Uri $NSIS_url -OutFile $NSIS_dl
     Start-Process -FilePath $NSIS_dl -ArgumentList "/S" -Wait
 }
+Write-Host "NSIS installed"
 
+$Python3Installed = CheckIsInstalled("Python 3")
 # Check to see if Python 3 is installed
-if (-Not CheckIsInstalled("Python 3")) {
+if (-Not $Python3Installed) {
     # Install python3.7.9
     Write-Host "Python 3 not installed, installing now"
     Invoke-WebRequest -Uri $Python_url -OutFile $Python_dl
     Start-Process -FilePath $Python_dl -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1" -Wait
 }
+Write-Host "Python 3 installed"
 
+Write-Host "Downloading Frame.io Transfer"
 Invoke-WebRequest -Uri $Transfer_url -OutFile $Transfer_dl
-Start-Process -FilePath 'python' -ArgumentList "squirrel-to-nsis.py $Transfer_dl $Transfer_nsis"
+Write-Host "Executing conversion"
+python "squirrel-to-nsis.py" $Transfer_dl $Transfer_nsis
+# Start-Process -FilePath .\squirrel-to-nsis.py -ArgumentList "$Transfer_dl $Transfer_nsis"
 Write-Host "NSIS installer can be found at ${Transfer_nsis}"

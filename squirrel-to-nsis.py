@@ -12,6 +12,7 @@ from xml.etree import ElementTree
 
 
 UNINST_ROOT: str = 'Software/Microsoft/Windows/CurrentVersion/Uninstall'
+NSIS_BIN_DIR = "C:\\Program Files (x86)\\NSIS\\Bin"
 
 
 class Nuspec:
@@ -32,9 +33,9 @@ def write_nsi(nuspec: Nuspec, folder: str, subdir: str):
         uninst_key: str = PureWindowsPath(UNINST_ROOT, nuspec.iden)
         nsi_file.write('Unicode True\n')
         nsi_file.write('Name "{}"\n'.format(nuspec.title))
-        nsi_file.write('Outfile "{} Setup.exe"\n'.format(nuspec.iden)
-        nsi_file.write('Icon "img\icon.ico"\n'.format(nuspec.iden)
-        nsi_file.write('UninstallIcon "img\icon.ico"\n'.format(nuspec.iden)
+        nsi_file.write('Outfile "{} Setup.exe"\n'.format(nuspec.iden))
+        nsi_file.write('Icon "img\icon.ico"\n'.format(nuspec.iden))
+        nsi_file.write('UninstallIcon "img\icon.ico"\n'.format(nuspec.iden))
         nsi_file.write('InstallDir "$PROGRAMFILES\\{}"\n'.format(nuspec.title))
         nsi_file.write('Section\n')
         nsi_file.write('SetOutPath "$INSTDIR"\n')
@@ -85,14 +86,18 @@ def main(squirrel: str, nsis: str):
     os.makedirs(os.path.join(tempdir, 'source'))
     for filename in os.listdir(os.path.join(tempdir, 'lib', 'net45')):
         shutil.move(os.path.join(tempdir, 'lib', 'net45', filename), os.path.join(tempdir, 'source', filename))
-        
+    shutil.copytree('img', os.path.join(tempdir, 'img'))
+
     write_nsi(nuspec=nuspec, folder=tempdir, subdir='source')
-    subprocess.run(['makensis', os.path.join(tempdir, 'setup.nsi'))])
-    shutil.move(Path(tempdir, '{} Setup.exe'.format(nuspec.iden)), Path(nsis))
+    subprocess.run([os.path.join(NSIS_BIN_DIR, 'makensis.exe'), os.path.join(tempdir, 'setup.nsi')])
+    if os.path.exists(os.path.join(tempdir, "{} Setup.exe".format(nuspec.iden))):
+        shutil.move(Path(tempdir, '{} Setup.exe'.format(nuspec.iden)), Path(nsis))
+        shutil.rmtree(tempdir)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('squirrel-setup-exe')
     parser.add_argument('nsis-output-path')
     args = parser.parse_args()
-    main(args.squirrel, args.nsis)
+    main(getattr(args, "squirrel-setup-exe"), getattr(args, "nsis-output-path"))
