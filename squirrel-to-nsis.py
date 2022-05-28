@@ -62,12 +62,48 @@ def write_nsi(nuspec: Nuspec, folder: str, subdir: str):
                  .format(uninst_key))
         nsi_file.write('SectionEnd\n')
 
-def main(squirrel: str, nsis: str):
-    nuspec: Nuspec
-    # tempdir = tempfile.TemporaryDirectory(delete=False)
-    tempdir = tempfile.mkdtemp()
-    # with tempfile.TemporaryDirectory() as tempdir:
-    with zipfile.ZipFile(squirrel) as container:
+
+def external_unzip(path, outpath):
+    import subprocess
+    if not os.path.exists(outpath):
+        os.makedirs(outpath)
+
+    seven_zip_path = 'C:\\Program Files\\7-Zip\\7z.exe'
+
+    proc = subprocess.Popen(
+        [
+            seven_zip_path, "x", path, "-o{}".format(outpath), "-y"
+        ], stdout=subprocess.PIPE
+    )
+    out, err = proc.communicate()
+
+    releases_file = os.path.join(outpath, "RELEASES")
+    if not os.path.exists(releases_file):
+        raise RuntimeError("Could not find expected RELEASES file in extracted squirrel archive")
+
+    with open(releases_file) as fh:
+        package = fh.read().split()[1]
+        name = package.rsplit("-", maxsplit=2)[0]
+
+    package_file = os.path.join(outpath, package)
+    if not os.path.exists(package_file):
+        raise RuntimeError("Could not find nupkg file: {}".format(package_file))
+
+    package_extract_path = outpath
+    proc = subprocess.Popen([seven_zip_path, "x", package_file, "-o{}".format(package_extract_path)], stdout=subprocess.PIPE)
+    proc.communicate()
+
+    nuspec_path = os.path.join(package_extract_path, name+".nuspec")
+    if not os.path.exists(nuspec_path):
+        raise RuntimeError("Could not find nuspec file: {}".format(nuspec_path))
+
+    with open(nuspec_path, "r", encoding="UTF-8", errors="ignore") as fh:
+        nuspec = Nuspec(fh)
+    return nuspec
+
+
+def native_unzip(path, tempdir):
+    with zipfile.ZipFile(path) as container:
         name: str
         package: str
         with container.open('RELEASES') as releases:
@@ -81,6 +117,18 @@ def main(squirrel: str, nsis: str):
                              not in ['', 'squirrel.exe']:
                     print("Extracting {} to {}".format(file, tempdir))
                     nupkg.extract(file, path=tempdir)
+    return nuspec
+
+
+def main(squirrel: str, nsis: str):
+    nuspec: Nuspec
+    # tempdir = tempfile.TemporaryDirectory(delete=False)
+    tempdir = tempfile.mkdtemp()
+    # with tempfile.TemporaryDirectory() as tempdir:
+    try:
+        nuspec = native_unzip(squirrel, tempdir)
+    except Exception as err:
+        nuspec = external_unzip(squirrel, tempdir)
     print("folder: {}".format(tempdir))
     # TODO: Copy all files from 'lib/net45' into source directory
     os.makedirs(os.path.join(tempdir, 'source'))
