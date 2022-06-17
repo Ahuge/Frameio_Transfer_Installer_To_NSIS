@@ -1,12 +1,12 @@
-$Transfer_url='https://dl.discordapp.net/distro/app/stable/win/x86/1.0.9004/DiscordSetup.exe'
-$Transfer_dl='C:\Temp\DiscordSetup.exe'
+$Transfer_url='https://release.axocdn.com/win64/GitKrakenSetup.exe'
+$Transfer_dl='C:\Temp\GitKrakenSetup.exe'
 
 $NSIS_url='https://cfhcable.dl.sourceforge.net/project/nsis/NSIS%203/3.08/nsis-3.08-setup.exe'
 $NSIS_dl='C:\Temp\nsis-3.08-setup.exe'
 
 $Python_url='https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe'
 $Python_dl='C:\Temp\python-3.7.9-amd64.exe'
-$Transfer_nsis='C:\Temp\DiscordSetup.NSIS.exe'
+$Transfer_nsis='C:\Temp\GitKraken.NSIS.exe'
 
 $ProgressPreference = 'SilentlyContinue'
 
@@ -43,7 +43,7 @@ if (-Not $Python3Installed) {
 }
 Write-Host "Python 3 installed"
 
-Write-Host "Downloading Discord"
+Write-Host "Downloading GitKraken"
 Invoke-WebRequest -Uri $Transfer_url -OutFile $Transfer_dl
 Write-Host "Executing conversion"
 python "squirrel-to-nsis.py" $Transfer_dl $Transfer_nsis
