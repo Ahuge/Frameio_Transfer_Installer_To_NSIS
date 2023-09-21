@@ -1,21 +1,22 @@
 Unicode True
-Name "Frame.io Transfer"
-Outfile "Frame.io Transfer Setup.exe"
+Name "Input ACE Axon Investigate"
+Outfile "Input ACE Axon Investigate Setup.exe"
 Icon "img\icon.ico"
 UninstallIcon "img\icon.ico"
-InstallDir "$PROGRAMFILES\Frame.io Transfer"
+InstallDir "$PROGRAMFILES\INPUT"
 Section
+SetShellVarContext all
 SetOutPath "$INSTDIR"
-File /r lib\net45
-CreateShortcut "$SMPROGRAMS\Frame.io Transfer.lnk"                  "$INSTDIR\net45\Frame.io Transfer.exe"
+File /r lib\native
+CreateShortcut "$SMPROGRAMS\Input ACE Axon Investigate.lnk"                  "$INSTDIR\-iNPUT.exe"
 WriteUninstaller "$INSTDIR\uninstall.exe"
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Transfer" "DisplayName" "Frame.io Transfer"
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Transfer"                  "UninstallString" "$\"$INSTDIR\uninstall.exe$\" "
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Transfer"                  "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\INPUT" "DisplayName" "Input ACE Axon Investigate"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\INPUT"                  "UninstallString" "$\"$INSTDIR\uninstall.exe$\" "
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\INPUT"                  "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
 SectionEnd
 Section "Uninstall"
 Delete "$INSTDIR\uninstall.exe"
-Delete "$SMPROGRAMS\Frame.io Transfer.lnk"
+Delete "$SMPROGRAMS\Input ACE Axon Investigate.lnk"
 RMDir /r "$INSTDIR"
-DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Transfer"
+DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\INPUT"
 SectionEnd

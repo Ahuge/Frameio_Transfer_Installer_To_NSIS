@@ -1,12 +1,12 @@
-$Transfer_url='https://transferapp.frame.io/Frame.io-Transfer/6ab0c27d61d7cf8793b0357e6533ed81/latest/win32/x64/Frame.io+Transfer.exe'
-$Transfer_dl='C:\Temp\Frame.io.Transfer.exe'
+$Transfer_url='https://inputace.blob.core.windows.net/input-ace-release/3.2.0.exe'
+$Transfer_dl='C:\Temp\InputACE-3.2.0.exe'
 
 $NSIS_url='https://cfhcable.dl.sourceforge.net/project/nsis/NSIS%203/3.08/nsis-3.08-setup.exe'
 $NSIS_dl='C:\Temp\nsis-3.08-setup.exe'
 
 $Python_url='https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe'
 $Python_dl='C:\Temp\python-3.7.9-amd64.exe'
-$Transfer_nsis='C:\Temp\Frame.io.Transfer.NSIS.exe'
+$Transfer_nsis='C:\Temp\InputACE-3.2.0.NSIS.exe'
 
 $ProgressPreference = 'SilentlyContinue'
 
@@ -43,9 +43,9 @@ if (-Not $Python3Installed) {
 }
 Write-Host "Python 3 installed"
 
-Write-Host "Downloading Frame.io Transfer"
+Write-Host "Downloading Input ACE Axon Investigate"
 Invoke-WebRequest -Uri $Transfer_url -OutFile $Transfer_dl
 Write-Host "Executing conversion"
-python "squirrel-to-nsis.py" $Transfer_dl $Transfer_nsis
+& 'C:\Program Files\Python37\python.exe' "squirrel-to-nsis.py" $Transfer_dl $Transfer_nsis --executable-name='-iNPUT'
 # Start-Process -FilePath .\squirrel-to-nsis.py -ArgumentList "$Transfer_dl $Transfer_nsis"
 Write-Host "NSIS installer can be found at ${Transfer_nsis}"
